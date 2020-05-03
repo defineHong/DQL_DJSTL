@@ -89,7 +89,7 @@ class SWEnv(gym.Env):
         next_state[1] = action
         next_state[2] = cm
         # 浮动
-        cm_weight = cm_weight + (self.create_weight(self.cm[0], self.cm[1]) - 0.5) * self.change_weight
+        # cm_weight = cm_weight + (self.create_weight(self.cm[0], self.cm[1]) - 0.5) * self.change_weight
         next_state[3] = cm_weight
         # 判断是否终止
         is_terminal = False
@@ -107,19 +107,22 @@ class SWEnv(gym.Env):
         self.__state = next_state
         return next_state, r, is_terminal, {}
 
+    def change_graph(self):
+        # 重新生成小世界网络
+        self.ws = ne.watts_strogatz_graph(self.NETWORK_SIZE, self.K, self.reconnect_p)
+        self.ps = ne.circular_layout(self.ws)  # 布置框架
+        # 可视化
+        pass
+        # self.viewer = ne.draw(self.ws, self.ps, with_labels=False, node_size=self.NETWORK_SIZE)
+        self.cm = np.array(ne.adjacency_matrix(self.ws).todense())  # 邻接矩阵
+        self.cm_weight = self.cm * self.create_weight(self.cm[0], self.cm[1]) * self.max_weight  # 邻接
+
+
     def reset(self):
         """
         重置环境
         :return: [步数，位置，邻接矩阵，带权矩阵]
         """
-        # 重新生成小世界网络
-        self.ws = ne.watts_strogatz_graph(self.NETWORK_SIZE, self.K, self.reconnect_p)
-        self.ps = ne.circular_layout(self.ws)  # 布置框架
-        # 可视化
-        # self.viewer = ne.draw(self.ws, self.ps, with_labels=False, node_size=self.NETWORK_SIZE)
-        self.cm = np.array(ne.adjacency_matrix(self.ws).todense())  # 邻接矩阵
-        self.cm_weight = self.cm * self.create_weight(self.cm[0], self.cm[1]) * self.max_weight  # 邻接
-
         # 设置起点
         self.__state = [0, 0, self.cm, self.cm_weight]  # 步数，位置，邻接矩阵，带权矩阵
         return self.__state  # 步数，位置，邻接矩阵，带权矩阵

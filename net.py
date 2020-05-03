@@ -22,20 +22,26 @@ class ActionNet(nn.Module):
         self.noise = None
         if noise:
             self.noise = torch.rand
-        self.noise_strength=0.3
+        self.noise_strength = 0.3
 
     def forward(self, x):
-
-        x = self.bn1(self.relu(self.fc1(x)))
-        x = self.bn2(self.relu(self.fc2(x)))
-        x = self.fc3(x)
+        output = x
+        output = self.bn1(self.relu(self.fc1(output)))
+        output = self.bn2(self.relu(self.fc2(output)))
+        output = self.fc3(output)
         if not self.noise is None:
-            n = self.noise(*x.shape)*self.noise_strength
-            x = x + n
+            n = self.noise(*output.shape) * self.noise_strength
+            output = output + n
         # 连接关系掩码
-        # todo: 连接关系掩码
-        x = self.sfm(x)
-        return x
+        cm = x[:, :900]
+        cm = cm.view(-1, 30, 30)
+        lp = x[:, 1800].long()
+        mask = [cm[i, lp[i]].unsqueeze(0) for i in range(cm.shape[0])]
+        mask = torch.cat(tuple(mask), dim=0)
+        output = output * mask
+
+        output = self.sfm(output)
+        return output
 
 
 class ActorNetLoss(nn.Module):
@@ -43,7 +49,7 @@ class ActorNetLoss(nn.Module):
         super(ActorNetLoss, self).__init__()
 
     def forward(self, critic_q, batch_size):
-        total_loss = torch.sum(critic_q)/bat
+        total_loss = torch.sum(critic_q) / batch_size
         return total_loss
 
 
@@ -66,6 +72,7 @@ class CriticNet(nn.Module):
         x = self.bn2(self.relu(self.fc2(x)))
         x = self.fc3(x)
         return x
+
 
 class CriticNetLoss(nn.Module):
     def __init__(self):

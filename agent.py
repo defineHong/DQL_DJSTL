@@ -33,6 +33,7 @@ class Agent:
         # 经验回放集合
         self.experience_playback = {'state': [],
                                     'action': [],
+                                    'next_state':[],
                                     'reward': [],
                                     'is_terminal': []}
 

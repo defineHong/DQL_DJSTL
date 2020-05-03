@@ -35,6 +35,7 @@ def get_logger(log_dir, file_filter="DEBUG", name=__name__, on_screen=True):
 
 
 def main(iteration_num=1000,
+         iteration_grah=100,
          checkpoint_freq=2,
          gpu_list='0',
          log_dir=None,
@@ -89,73 +90,70 @@ def main(iteration_num=1000,
         eps=1e-08,
         weight_decay=1e-4
     )
-    agent.critic_optimizer = torch.optim.Adam(
-        agent.critic_net_now.parameters(),
-        lr=0.001,  # 学习率
-        betas=(0.9, 0.999),
-        eps=1e-08,
-        weight_decay=1e-4
-    )
     actor_scheduler = torch.optim.lr_scheduler.StepLR(agent.actor_optimizer, step_size=20, gamma=0.7)
     critic_scheduler = torch.optim.lr_scheduler.StepLR(agent.critic_optimizer, step_size=20, gamma=0.7)
 
     for it in range(iteration_num):
-        # 初始化环境
-        state = env.reset()
-        state = agent.state2actor_tensor(state)  # 转化为tensor
-        if gpu_list == '':
-            state = state.cuda()
-        is_terminal = True
-        # 清空ep
-        agent.experience_playback = {'state': [],
-                                     'action': [],
-                                     'reward': [],
-                                     'next_state': [],
-                                     'is_terminal': []}
-        # 迭代训练
-        actor_scheduler.step()
-        critic_scheduler.step()
-        while not is_terminal:
-            # 动作网络
-            a_output = agent.actor_net_now(state)
-            # 执行动作
-            a = a_output.data.max(1)[1]
-            next_state, r, is_terminal, _ = env.step(int(a[0]))
-            next_state = agent.state2actor_tensor(next_state)
-            r = torch.Tensor([r])
-
-            if is_terminal:
-                is_terminal_bit = torch.Tensor([0])
-            else:
-                is_terminal_bit = torch.Tensor([1])
+        # 生成图
+        env.change_graph()
+        for itg in iteration_grah:
+            # 重置环境
+            state = env.change_graph()
+            state = agent.state2actor_tensor(state)  # 转化为tensor
             if gpu_list == '':
-                next_state = next_state.cuda()
-                r = r.cuda()
-                is_terminal_bit = is_terminal_bit.cuda()
-            # 经验回放
-            agent.experience_playback['state'].append(state)
-            agent.experience_playback['action'].append(a_output)
-            agent.experience_playback['reward'].append(r)
-            agent.experience_playback['is_terminal'].append(is_terminal_bit)
-            state = next_state
-            # 更新当前critic网络
-            agent.critic_learn(agent.batch_size, gpu_list=gpu_list)
-            # 更新当前actor网络
-            agent.actor_learn(agent.batch_size, gpu_list=gpu_list)
-        # 目标网络参数更新
-        if it % agent.actor_updata_freq == 0:  # 目标动作网络更新
-            agent.update_now_net2target_net(agent.actor_net_now, agent.actor_net, agent.tau_actor)
-        if it % agent.critic_updata_freq == 0:  # 目标动作网络更新
-            agent.update_now_net2target_net(agent.critic_net_now, agent.critic_net, agent.tau_critic)
-        # 网络参数保存
-        if it % checkpoint_freq == 0:
-            logger.info('Save model...')
-            actor_savepath = str(checkpoints_dir) + '/actor_model_iter' + str(it) + '.pth'
-            critic_savepath = str(checkpoints_dir) + '/critic_model_iter' + str(it) + '.pth'
-            logger.info('Actor Net Saving at %s' % actor_savepath)
-            logger.info('Critic Net Saving at %s' % critic_savepath)
-            torch.save(agent.actor_net.state_dict(), actor_savepath)
-            torch.save(agent.critic_net.state_dict(), critic_savepath)
+                state = state.cuda()
+            is_terminal = True
+            # 清空ep
+            agent.experience_playback = {'state': [],
+                                         'action': [],
+                                         'reward': [],
+                                         'next_state': [],
+                                         'is_terminal': []}
+            # 迭代训练
+            actor_scheduler.step()
+            critic_scheduler.step()
+            while not is_terminal:
+                # 动作网络
+                a_output = agent.actor_net_now(state)
+                # 执行动作
+                a = a_output.data.max(1)[1]
+                next_state, r, is_terminal, _ = env.step(int(a[0]))
+                next_state = agent.state2actor_tensor(next_state)
+                r = torch.Tensor([r])
+
+                if is_terminal:
+                    is_terminal_bit = torch.Tensor([0])
+                else:
+                    is_terminal_bit = torch.Tensor([1])
+                if gpu_list == '':
+                    next_state = next_state.cuda()
+                    r = r.cuda()
+                    is_terminal_bit = is_terminal_bit.cuda()
+                # 经验回放
+                agent.experience_playback['state'].append(state)
+                agent.experience_playback['action'].append(a_output)
+                agent.experience_playback['reward'].append(r)
+                agent.experience_playback['next_state'].append(next_state)
+                agent.experience_playback['is_terminal'].append(is_terminal_bit)
+                state = next_state
+                # 更新当前critic网络
+                agent.critic_learn(agent.batch_size, gpu_list=gpu_list)
+                # 更新当前actor网络
+                agent.actor_learn(agent.batch_size, gpu_list=gpu_list)
+            # 目标网络参数更新
+            if itg % agent.actor_updata_freq == 0:  # 目标动作网络更新
+                agent.update_now_net2target_net(agent.actor_net_now, agent.actor_net, agent.tau_actor)
+            if itg % agent.critic_updata_freq == 0:  # 目标动作网络更新
+                agent.update_now_net2target_net(agent.critic_net_now, agent.critic_net, agent.tau_critic)
+            # 网络参数保存
+            if itg % checkpoint_freq == 0:
+                logger.info('Save model...')
+                actor_savepath = str(checkpoints_dir) + '/actor_model_iter' + str(it) + '.pth'
+                critic_savepath = str(checkpoints_dir) + '/critic_model_iter' + str(it) + '.pth'
+                logger.info('Actor Net Saving at %s' % actor_savepath)
+                logger.info('Critic Net Saving at %s' % critic_savepath)
+                torch.save(agent.actor_net.state_dict(), actor_savepath)
+                torch.save(agent.critic_net.state_dict(), critic_savepath)
 
 
 if __name__ == '__main__':
