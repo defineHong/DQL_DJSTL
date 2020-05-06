@@ -17,7 +17,7 @@ class SWEnv(gym.Env):
     def __init__(self):
         # 小世界网络生成基本设置
         self.NETWORK_SIZE = 30
-        self.K = 15
+        self.K = 4
         self.reconnect_p = 0.5
         self.cm = None  # 邻接矩阵
         self.cm_weight = None
