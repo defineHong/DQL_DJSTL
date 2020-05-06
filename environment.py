@@ -29,7 +29,7 @@ class SWEnv(gym.Env):
 
         # 状态空间设置
         self.observation_space = list(range(30))  # 状态空间
-        self.__terminal_finial = 30  # 终止状态为字典格式
+        self.__terminal_finial = 29  # 终止状态为字典格式
 
         # 状态转移
         pass
@@ -39,6 +39,7 @@ class SWEnv(gym.Env):
         self.viewer = None  # 环境可视化
         self.__state = None  # 当前状态
         self.seed()  # 随机种子
+        self.boot_reward = True  # 引导奖励
 
     def _reward(self, state, action):
         """
@@ -51,13 +52,25 @@ class SWEnv(gym.Env):
         step_num = state[0]
         local_point = state[1]
         cm = state[2]
-        cm_weight = [3]
+        cm_weight = state[3]
         # 终止
         if cm[local_point, action] == 0 or step_num > 30:
             return -10000
         # 到达
         if self.__terminal_finial == action:
             return 1000
+        # dijkstra boot
+        if self.boot_reward:
+            G = ne.Graph()  # 小世界网络转出至另一个图中
+            for i in range(30):  # 添加边
+                for j in range(i, 30):
+                    if cm[i, j] != 0:
+                        G.add_edge(i, j, weight=cm_weight[i, j])
+            path = ne.dijkstra_path(G, source=local_point, target=self.__terminal_finial)
+            mid = path[1]
+            if action == mid:
+                return 10
+
         # 经过
         return -cm_weight[local_point, action]
 
@@ -75,7 +88,7 @@ class SWEnv(gym.Env):
         step_num = state[0]
         local_point = state[1]
         cm = state[2]
-        cm_weight = [3]
+        cm_weight = state[3]
 
         # 计算回报
         r = self._reward(state, action)
@@ -115,8 +128,7 @@ class SWEnv(gym.Env):
         pass
         # self.viewer = ne.draw(self.ws, self.ps, with_labels=False, node_size=self.NETWORK_SIZE)
         self.cm = np.array(ne.adjacency_matrix(self.ws).todense())  # 邻接矩阵
-        self.cm_weight = self.cm * self.create_weight(self.cm[0], self.cm[1]) * self.max_weight  # 邻接
-
+        self.cm_weight = self.cm * self.create_weight(self.cm.shape[0], self.cm.shape[1]) * self.max_weight  # 邻接
 
     def reset(self):
         """
