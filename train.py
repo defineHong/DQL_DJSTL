@@ -5,6 +5,7 @@ import datetime
 import torch
 from pathlib import Path
 from tqdm import tqdm
+import json
 
 
 def get_logger(log_dir, file_filter="DEBUG", name=__name__, on_screen=True):
@@ -160,8 +161,8 @@ def main(iteration_num=1000,
             if itg % agent.critic_updata_freq == 1:  # 目标动作网络更新
                 agent.update_now_net2target_net(agent.critic_net_now, agent.critic_net, agent.tau_critic)
         # 测试代码
-        logger.info('iter num:'+str(it)+'----'+'actor loss:'+str(al))
-        logger.info('iter num:'+str(it)+'----'+'critic loss:'+str(cl))
+        logger.info('iter num:'+str(it)+'----'+'actor loss:'+str(al.data))
+        logger.info('iter num:'+str(it)+'----'+'critic loss:'+str(cl.data))
         with torch.no_grad():
             # 重置环境
             state = env.reset()
@@ -201,8 +202,10 @@ def main(iteration_num=1000,
                 agent.experience_playback['next_state'].append(next_state)
                 agent.experience_playback['is_terminal'].append(is_terminal_bit)
                 state = next_state
+
             finial_reward=torch.cat(tuple(agent.experience_playback['reward']),dim=0)
             logger.info("test reward:",torch.sum(finial_reward,0))
+            logger.debug("path:",agent.experience_playback['action'])
         # 网络参数保存
         if it % checkpoint_freq == 1:
             logger.info('Save model...')
