@@ -87,28 +87,30 @@ def main(iteration_num=1000,
     # 优化器
     agent.actor_optimizer = torch.optim.Adam(
         agent.actor_net_now.parameters(),
-        lr=0.001,  # 学习率
+        lr=0.01,  # 学习率
         betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=1e-4
     )
     agent.critic_optimizer = torch.optim.Adam(
         agent.critic_net_now.parameters(),
-        lr=0.001,  # 学习率
+        lr=0.01,  # 学习率
         betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=1e-4
     )
-    actor_scheduler = torch.optim.lr_scheduler.StepLR(agent.actor_optimizer, step_size=20, gamma=0.7)
-    critic_scheduler = torch.optim.lr_scheduler.StepLR(agent.critic_optimizer, step_size=20, gamma=0.7)
+    actor_scheduler = torch.optim.lr_scheduler.StepLR(agent.actor_optimizer, step_size=5, gamma=0.9)
+    critic_scheduler = torch.optim.lr_scheduler.StepLR(agent.critic_optimizer, step_size=5, gamma=0.9)
 
     for it in range(iteration_num):
         # 生成图
-        print("-----------------------------------")
-        print("iteration_num:",it)
+        logger.info("-----------------------------------")
+        logger.info("iteration_num:",it)
         env.change_graph()
         cl_list = []
         al_list = []
+        actor_scheduler.step()
+        critic_scheduler.step()
         for itg in tqdm(range(iteration_graph), total=iteration_graph, smoothing=0.9):
             # 重置环境
             state = env.reset()
@@ -123,8 +125,6 @@ def main(iteration_num=1000,
                                          'next_state': [],
                                          'is_terminal': []}
             # 迭代训练
-            actor_scheduler.step()
-            critic_scheduler.step()
             while not is_terminal:
                 # 动作网络
                 a_output = agent.actor_net_now(state)
@@ -160,9 +160,9 @@ def main(iteration_num=1000,
                 agent.update_now_net2target_net(agent.actor_net_now, agent.actor_net, agent.tau_actor)
             if itg % agent.critic_updata_freq == 1:  # 目标动作网络更新
                 agent.update_now_net2target_net(agent.critic_net_now, agent.critic_net, agent.tau_critic)
+        logger.info('iter num:'+str(it)+'----'+'actor loss:'+str(al_list))
+        logger.info('iter num:'+str(it)+'----'+'critic loss:'+str(cl_list))
         # 测试代码
-        logger.info('iter num:'+str(it)+'----'+'actor loss:'+str(al.data))
-        logger.info('iter num:'+str(it)+'----'+'critic loss:'+str(cl.data))
         with torch.no_grad():
             # 重置环境
             state = env.reset()

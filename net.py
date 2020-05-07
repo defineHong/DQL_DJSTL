@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class ActionNet(nn.Module):
@@ -19,7 +20,7 @@ class ActionNet(nn.Module):
         self.noise = None
         if noise:
             self.noise = torch.rand
-        self.noise_strength = 0.3
+        self.noise_strength = 0.01
 
     def forward(self, x):
         output = x
@@ -36,8 +37,8 @@ class ActionNet(nn.Module):
         mask = [cm[i, lp[i]].unsqueeze(0) for i in range(cm.shape[0])]
         mask = torch.cat(tuple(mask), dim=0)
         output = output * mask
-
-        output = self.sfm(output)
+        output = F.log_softmax(output,-1)
+        # output = self.sfm(output)
         return output
 
 
