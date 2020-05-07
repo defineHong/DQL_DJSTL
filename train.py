@@ -153,8 +153,8 @@ def main(iteration_num=1000,
                 cl=agent.critic_learn(agent.batch_size, gpu_list=gpu_list)
                 # 更新当前actor网络
                 al=agent.actor_learn(agent.batch_size, gpu_list=gpu_list)
-                cl_list.append(cl)
-                al_list.append(al)
+                cl_list.append(cl.cpu().detach().numpy().tolist())
+                al_list.append(al.cpu().detach().numpy().tolist())
             # 目标网络参数更新
             if itg % agent.actor_updata_freq == 1:  # 目标动作网络更新
                 agent.update_now_net2target_net(agent.actor_net_now, agent.actor_net, agent.tau_actor)
