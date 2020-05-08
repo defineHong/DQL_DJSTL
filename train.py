@@ -1,10 +1,12 @@
 from agent import Agent
 from environment import SWEnv
+import networkx as nx
 import logging
 import datetime
 import torch
 from pathlib import Path
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 import json
 
 
@@ -126,6 +128,13 @@ def main(iteration_num=2,
         al_list = []
         actor_scheduler.step()                      # 进行学习率衰减
         critic_scheduler.step()
+
+        target_graph = env.ws
+        ps = nx.circular_layout(target_graph)  # 布置框架
+        nx.draw(target_graph, ps, with_labels=False, node_size=30)
+        plt.savefig("train_obj%d" % it)
+        plt.close()
+
         for itg in tqdm(range(iteration_graph), total=iteration_graph, smoothing=0.9):
             # 重置环境
             state = env.reset()
@@ -139,6 +148,8 @@ def main(iteration_num=2,
                                          'reward': [],
                                          'next_state': [],
                                          'is_terminal': []}
+
+
             # 迭代训练
             while not is_terminal:
                 # 动作网络
@@ -146,6 +157,7 @@ def main(iteration_num=2,
                 # 执行动作
                 a = a_output.data.max(1)[1]
                 next_state, r, is_terminal, _ = env.step(int(a[0]))
+                Write_Text(str(log_dir) + 'Path.txt', '%d' % int(a[0]))
                 next_state = agent.state2actor_tensor(next_state,gpu_list)
                 r = torch.Tensor([r])
 
@@ -170,6 +182,7 @@ def main(iteration_num=2,
                 al=agent.actor_learn(agent.batch_size, gpu_list=gpu_list)
                 cl_list.append(cl.cpu().detach().numpy().tolist())
                 al_list.append(al.cpu().detach().numpy().tolist())
+
             # 目标网络参数更新
             if itg % agent.actor_updata_freq == 1:  # 目标动作网络更新
                 agent.update_now_net2target_net(agent.actor_net_now, agent.actor_net, agent.tau_actor)
