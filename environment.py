@@ -129,6 +129,11 @@ class SWEnv(gym.Env):
         # self.viewer = ne.draw(self.ws, self.ps, with_labels=False, node_size=self.NETWORK_SIZE)
         self.cm = np.array(ne.adjacency_matrix(self.ws).todense())  # 邻接矩阵
         self.cm_weight = self.cm * self.create_weight(self.cm.shape[0], self.cm.shape[1]) * self.max_weight  # 邻接
+        for i in range(30):
+            for j in range(30):
+                self.cm_weight[i,j]=self.cm_weight[j,i]
+
+
 
     def reset(self):
         """
