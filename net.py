@@ -37,7 +37,7 @@ class ActionNet(nn.Module):
         mask = [cm[i, lp[i]].unsqueeze(0) for i in range(cm.shape[0])]
         mask = torch.cat(tuple(mask), dim=0)
         output = output * mask
-        output = F.log_softmax(output,-1)
+        output = F.softmax(output,-1)
         # output = self.sfm(output)
         return output
 
@@ -47,7 +47,7 @@ class ActorNetLoss(nn.Module):
         super(ActorNetLoss, self).__init__()
 
     def forward(self, critic_q):
-        total_loss = torch.mean(critic_q)
+        total_loss = -torch.mean(critic_q)
         return total_loss
 
 
