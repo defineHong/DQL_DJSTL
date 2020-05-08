@@ -101,18 +101,19 @@ def main(iteration_num=2,
     # 优化器
     agent.actor_optimizer = torch.optim.Adam(
         agent.actor_net_now.parameters(),
-        lr=0.01,  # 学习率
+        lr=0.001,  # 学习率
         betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=1e-4
     )
     agent.critic_optimizer = torch.optim.Adam(
         agent.critic_net_now.parameters(),
-        lr=0.01,  # 学习率
+        lr=0.001,  # 学习率
         betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=1e-4
     )
+    # 学习率衰减
     actor_scheduler = torch.optim.lr_scheduler.StepLR(agent.actor_optimizer, step_size=5, gamma=0.9)
     critic_scheduler = torch.optim.lr_scheduler.StepLR(agent.critic_optimizer, step_size=5, gamma=0.9)
 
@@ -121,9 +122,9 @@ def main(iteration_num=2,
         logger.info("-----------------------------------")
         logger.info("iteration_num:",it)
         env.change_graph()
-        cl_list = []                                #这两个list
+        cl_list = []                                # 记录两个loss
         al_list = []
-        actor_scheduler.step()                      #.step
+        actor_scheduler.step()                      # 进行学习率衰减
         critic_scheduler.step()
         for itg in tqdm(range(iteration_graph), total=iteration_graph, smoothing=0.9):
             # 重置环境

@@ -63,16 +63,16 @@ class Agent:
             ist_b = ist_b.cuda()
             r_b = r_b.cuda()
         # q = r_b + ist_b * next_q * gamma_b
-        q = ist_b*next_q
-        q=q*gamma_b
-        q=q+r_b
+        q = ist_b * next_q
+        q = q * gamma_b
+        q = q + r_b
         ep_state_action_b = torch.cat((ep_state_b, ep_action_b), 1)
         self.critic_optimizer.zero_grad()
-        q=torch.from_numpy(q.cpu().detach().numpy())
-        ep_state_action_b=torch.from_numpy(ep_state_action_b.cpu().detach().numpy())
-        if not gpu_list=='':
-            q=q.cuda()
-            ep_state_action_b=ep_state_action_b.cuda()
+        q = q.detach()
+        ep_state_action_b = ep_state_action_b.detach()
+        if not gpu_list == '':
+            q = q.cuda()
+            ep_state_action_b = ep_state_action_b.cuda()
         critic_q = self.critic_net_now(ep_state_action_b)
         critic_loss = self.critic_net_loss(critic_q, q)
         critic_loss.backward(retain_graph=retain_graph)
@@ -112,5 +112,6 @@ class Agent:
             x = x.cuda()
         return x
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     pass
