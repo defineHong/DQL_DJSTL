@@ -207,7 +207,7 @@ def main(iteration_num=1000,
             logger.info("test reward:",torch.sum(finial_reward,0))
             logger.debug("path:",agent.experience_playback['action'])
         # 网络参数保存
-        if it % checkpoint_freq == 1:
+        if it % checkpoint_freq == 0:
             logger.info('Save model...')
             actor_savepath = str(checkpoints_dir) + '/actor_model_iter' + str(it) + '.pth'
             critic_savepath = str(checkpoints_dir) + '/critic_model_iter' + str(it) + '.pth'
