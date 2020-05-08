@@ -29,7 +29,7 @@ class SWEnv(gym.Env):
 
         # 状态空间设置
         self.observation_space = list(range(30))  # 状态空间
-        self.__terminal_finial = 29  # 终止状态为字典格式
+        self.__terminal_finial = 7  # 终止状态为字典格式
 
         # 状态转移
         pass

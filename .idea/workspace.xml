@@ -19,10 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba68d819-5f87-46ff-9489-c78f9f2755fa" name="Default Changelist" comment="change softmax-&gt;log_softmax&#10;change lr 0.001-&gt;0.01&#10;change schedular 0.7-&gt;0.99">
-      <change beforePath="$PROJECT_DIR$/.idea/DQL_DJSTL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DQL_DJSTL.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="ba68d819-5f87-46ff-9489-c78f9f2755fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/environment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,6 +31,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/DQL_DJSTL$train.coverage" NAME="train Coverage Results" MODIFIED="1588927664566" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DQL_DJSTL$WS.coverage" NAME="WS Coverage Results" MODIFIED="1588171867418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DQL_DJSTL$environment.coverage" NAME="environment Coverage Results" MODIFIED="1588172382877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -40,31 +40,66 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="1" />
-          <entry key="project.open.time.0" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.0" value="2" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="1" />
+          <entry key="py" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="1" />
+          <entry key="Python" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="3" />
+          <entry key="txt" value="26" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="PLAIN_TEXT" value="26" />
+          <entry key="Python" value="3" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="653">
-              <caret line="234" selection-start-line="234" selection-end-line="234" />
+            <state relative-caret-position="231">
+              <caret line="146" column="67" selection-start-line="146" selection-start-column="67" selection-end-line="146" selection-end-column="67" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/net.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-502">
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/environment.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="462">
+              <caret line="31" column="34" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -90,6 +125,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/environment.py" />
         <option value="$PROJECT_DIR$/train.py" />
       </list>
     </option>
@@ -328,7 +364,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588840367094</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="change part of logs-&gt;txt">
+      <created>1588927209412</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1588927209413</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -341,31 +384,31 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-7" width="1478" height="878" extended-state="6" />
+    <frame x="65" y="-7" width="1478" height="878" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2535211" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32885906" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Remote Host" />
-      <window_info anchor="right" id="SciView" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="11" />
+      <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Remote Host" order="3" />
+      <window_info anchor="right" id="SciView" order="4" />
+      <window_info anchor="right" id="Database" order="5" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -398,61 +441,36 @@
     <MESSAGE value="set k number" />
     <MESSAGE value="path" />
     <MESSAGE value="change softmax-&gt;log_softmax&#10;change lr 0.001-&gt;0.01&#10;change schedular 0.7-&gt;0.99" />
-    <option name="LAST_COMMIT_MESSAGE" value="change softmax-&gt;log_softmax&#10;change lr 0.001-&gt;0.01&#10;change schedular 0.7-&gt;0.99" />
+    <MESSAGE value="change part of logs-&gt;txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="change part of logs-&gt;txt" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="233" y="0" key="#Deployment" timestamp="1588775055731">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="233" y="0" key="#Deployment/0.0.1280.680@0.0.1280.680" timestamp="1588775055731" />
-    <state width="1278" height="440" key="DebuggerActiveHint" timestamp="1588782707122">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1278" height="440" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" timestamp="1588782707122" />
-    <state x="421" y="96" key="FileChooserDialogImpl" timestamp="1588775674163">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="421" y="96" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1588775674163" />
-    <state width="617" height="206" key="GridCell.Tab.0.bottom" timestamp="1588788027089">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="617" height="206" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1588788027089" />
-    <state width="617" height="206" key="GridCell.Tab.0.center" timestamp="1588788027089">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="617" height="206" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1588788027089" />
-    <state width="617" height="206" key="GridCell.Tab.0.left" timestamp="1588788027089">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="617" height="206" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1588788027089" />
-    <state width="617" height="206" key="GridCell.Tab.0.right" timestamp="1588788027089">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="617" height="206" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1588788027089" />
-    <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1588783706513">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1588783706513" />
-    <state width="1237" height="204" key="GridCell.Tab.1.center" timestamp="1588783706512">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1588783706512" />
-    <state width="1237" height="204" key="GridCell.Tab.1.left" timestamp="1588783706512">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1588783706512" />
-    <state width="1237" height="204" key="GridCell.Tab.1.right" timestamp="1588783706513">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1588783706513" />
-    <state x="233" y="74" key="Vcs.Push.Dialog.v2" timestamp="1588840376867">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="233" y="74" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1588840376867" />
-    <state x="388" y="71" key="ftp.server.browser" timestamp="1588775025287">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="388" y="71" key="ftp.server.browser/0.0.1280.680@0.0.1280.680" timestamp="1588775025287" />
+    <state x="233" y="0" key="#Deployment" />
+    <state x="233" y="0" key="#Deployment/0.0.1280.680@0.0.1280.680" />
+    <state width="1278" height="440" key="DebuggerActiveHint" />
+    <state width="1278" height="440" key="DebuggerActiveHint/0.0.1280.680@0.0.1280.680" />
+    <state x="421" y="96" key="FileChooserDialogImpl" />
+    <state x="421" y="96" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" />
+    <state width="617" height="206" key="GridCell.Tab.0.bottom" />
+    <state width="617" height="206" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" />
+    <state width="617" height="206" key="GridCell.Tab.0.center" />
+    <state width="617" height="206" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" />
+    <state width="617" height="206" key="GridCell.Tab.0.left" />
+    <state width="617" height="206" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" />
+    <state width="617" height="206" key="GridCell.Tab.0.right" />
+    <state width="617" height="206" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" />
+    <state width="1237" height="204" key="GridCell.Tab.1.bottom" />
+    <state width="1237" height="204" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" />
+    <state width="1237" height="204" key="GridCell.Tab.1.center" />
+    <state width="1237" height="204" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" />
+    <state width="1237" height="204" key="GridCell.Tab.1.left" />
+    <state width="1237" height="204" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" />
+    <state width="1237" height="204" key="GridCell.Tab.1.right" />
+    <state width="1237" height="204" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" />
+    <state x="233" y="74" key="Vcs.Push.Dialog.v2" />
+    <state x="233" y="74" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" />
+    <state x="388" y="71" key="ftp.server.browser" />
+    <state x="388" y="71" key="ftp.server.browser/0.0.1280.680@0.0.1280.680" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -472,10 +490,29 @@
     <SUITE FILE_PATH="coverage/DQL_DJSTL$agent.coverage" NAME="agent Coverage Results" MODIFIED="1588778123889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/environment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="31" column="34" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/net.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-502">
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="234" selection-start-line="234" selection-end-line="234" />
+        <state relative-caret-position="231">
+          <caret line="146" column="67" selection-start-line="146" selection-start-column="67" selection-end-line="146" selection-end-column="67" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
