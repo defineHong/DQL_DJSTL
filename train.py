@@ -35,9 +35,20 @@ def get_logger(log_dir, file_filter="DEBUG", name=__name__, on_screen=True):
         logger.addHandler(console)
     return logger
 
+def text_create(name, msg):     # 创建一个txt
+    full_path = name + '.txt'
+    file = open(full_path, 'w')
+    file.write(msg)             # 写入部分msg
+    file.close()
 
-def main(iteration_num=1000,
-         iteration_graph=100,
+def Write_Text(file_name,contant):  #写入文档
+    # file_name = 'test.txt'
+    with open(file_name,"a+") as f:
+        f.writelines(contant)
+        f.writelines("\n")
+
+def main(iteration_num=2,
+         iteration_graph=50,
          checkpoint_freq=1,
          gpu_list='0',
          log_dir=None,
@@ -61,6 +72,9 @@ def main(iteration_num=1000,
     log_dir.mkdir(exist_ok=True)
     """BEGIN LOGGING"""
     logger = get_logger(log_dir, name="agent_0")
+    text_create(str(log_dir) + 'Reward','Reward:\n')
+    text_create(str(log_dir) + 'Path', 'Path:\n')
+    text_create(str(log_dir) + 'Save model', 'Save model:\n')
     logger.info("EXPERIMENT TIME:" + timestr)
     # 创建环境
     env = SWEnv()
@@ -83,7 +97,7 @@ def main(iteration_num=1000,
     agent.actor_net.train()
     agent.critic_net.train()
     agent.actor_net_now.train()
-    agent.critic_net_now.train()
+    agent.critic_net_now.train()#.train
     # 优化器
     agent.actor_optimizer = torch.optim.Adam(
         agent.actor_net_now.parameters(),
@@ -107,9 +121,9 @@ def main(iteration_num=1000,
         logger.info("-----------------------------------")
         logger.info("iteration_num:",it)
         env.change_graph()
-        cl_list = []
+        cl_list = []                                #这两个list
         al_list = []
-        actor_scheduler.step()
+        actor_scheduler.step()                      #.step
         critic_scheduler.step()
         for itg in tqdm(range(iteration_graph), total=iteration_graph, smoothing=0.9):
             # 重置环境
@@ -205,14 +219,18 @@ def main(iteration_num=1000,
 
             finial_reward=torch.cat(tuple(agent.experience_playback['reward']),dim=0)
             logger.info("test reward:",torch.sum(finial_reward,0))
+            Write_Text(str(log_dir)+'Reward.txt', '%f\t' % torch.sum(finial_reward,0))
             logger.debug("path:",agent.experience_playback['action'])
         # 网络参数保存
-        if it % checkpoint_freq == 1:
+        if it % checkpoint_freq == 0:
             logger.info('Save model...')
-            actor_savepath = str(checkpoints_dir) + '/actor_model_iter' + str(it) + '.pth'
-            critic_savepath = str(checkpoints_dir) + '/critic_model_iter' + str(it) + '.pth'
+            Write_Text(str(log_dir) + 'Save model.txt', 'Save model...\n')
+            actor_savepath = str(checkpoints_dir) + '\\actor_model_iter' + str(it) + '.pth'
+            critic_savepath = str(checkpoints_dir) + '\\critic_model_iter' + str(it) + '.pth'
             logger.info('Actor Net Saving at %s' % actor_savepath)
             logger.info('Critic Net Saving at %s' % critic_savepath)
+            Write_Text(str(log_dir) + 'Save model.txt', 'Actor Net Saving at %s\n' % actor_savepath)
+            Write_Text(str(log_dir) + 'Save model.txt', 'Critic Net Saving at %s\n' % critic_savepath)
             torch.save(agent.actor_net.state_dict(), actor_savepath)
             torch.save(agent.critic_net.state_dict(), critic_savepath)
 
