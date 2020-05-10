@@ -26,7 +26,7 @@ class SWEnv(gym.Env):
         self.max_weight = 5
         self.change_weight = 1.5
         self.create_weight = np.random.rand
-
+        self.terminal = 7
         # 状态空间设置
         self.observation_space = list(range(30))  # 状态空间
         self.__terminal_finial = 7  # 终止状态为字典格式

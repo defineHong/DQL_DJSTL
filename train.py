@@ -7,6 +7,7 @@ import torch
 from pathlib import Path
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import random
 import json
 
 
@@ -82,6 +83,8 @@ def main(iteration_num=2,
     env = SWEnv()
     # 创建个体
     agent = Agent()
+    lead_rate = 0           # 引导概率
+    boost_rate = 0.02       # 引导加速概率
     # 初始化网络
     if not gpu_list == '':
         agent.actor_net = agent.actor_net.cuda()
@@ -132,12 +135,22 @@ def main(iteration_num=2,
         target_graph = env.ws
         ps = nx.circular_layout(target_graph)  # 布置框架
         nx.draw(target_graph, ps, with_labels=False, node_size=30)
-        plt.savefig("train_obj%d" % it)
+        plt.savefig(str(log_dir) + 'train_Graph %d' % it)
         plt.close()
+
+        G = nx.Graph()  # 小世界网络转出至另一个图中
+        for i in range(30):  # 添加边
+            for j in range(i, 30):
+                if env.cm[i, j] != 0:
+                    G.add_edge(i, j, weight=env.cm_weight[i, j])
+
+        Write_Text(str(log_dir) + 'Path.txt', 'train_graph No.%d ' % it)
+
 
         for itg in tqdm(range(iteration_graph), total=iteration_graph, smoothing=0.9):
             # 重置环境
             state = env.reset()
+            local_position = state[1]
             state = agent.state2actor_tensor(state,gpu_list)  # 转化为tensor
             if gpu_list == '':
                 state = state.cuda()
@@ -149,15 +162,27 @@ def main(iteration_num=2,
                                          'next_state': [],
                                          'is_terminal': []}
 
-
+            Write_Text(str(log_dir) + 'Path.txt', 'Route No.%d ' % itg)
+            total_r = 0
             # 迭代训练
             while not is_terminal:
                 # 动作网络
                 a_output = agent.actor_net_now(state)
                 # 执行动作
                 a = a_output.data.max(1)[1]
-                next_state, r, is_terminal, _ = env.step(int(a[0]))
-                Write_Text(str(log_dir) + 'Path.txt', '%d' % int(a[0]))
+                # 当下Agent所做的选择
+                present_step = int(a[0])
+                # 开始引导部分
+                action_lead_p = random.random()
+                if action_lead_p < lead_rate:
+                    path = nx.dijkstra_path(G, source=local_position, target=env.terminal)
+                    present_step = path[1]
+                    local_position = path[1]
+                lead_rate = lead_rate + boost_rate
+
+                next_state, r, is_terminal, _ = env.step(present_step)
+                Write_Text(str(log_dir) + 'Path.txt', '%d' % present_step)
+                total_r = total_r + r
                 next_state = agent.state2actor_tensor(next_state,gpu_list)
                 r = torch.Tensor([r])
 
@@ -165,7 +190,7 @@ def main(iteration_num=2,
                     is_terminal_bit = torch.Tensor([0])
                 else:
                     is_terminal_bit = torch.Tensor([1])
-                if gpu_list == '':
+                if not gpu_list == '':
                     next_state = next_state.cuda()
                     r = r.cuda()
                     is_terminal_bit = is_terminal_bit.cuda()
@@ -183,6 +208,8 @@ def main(iteration_num=2,
                 cl_list.append(cl.cpu().detach().numpy().tolist())
                 al_list.append(al.cpu().detach().numpy().tolist())
 
+            Write_Text(str(log_dir) + 'Path.txt', '本次总Reward：%d' % total_r)
+            Write_Text(str(log_dir) + 'Path.txt', '\n')
             # 目标网络参数更新
             if itg % agent.actor_updata_freq == 1:  # 目标动作网络更新
                 agent.update_now_net2target_net(agent.actor_net_now, agent.actor_net, agent.tau_actor)
