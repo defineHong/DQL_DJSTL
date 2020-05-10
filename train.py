@@ -259,7 +259,7 @@ def main(iteration_num=2,
                 state = next_state
 
             finial_reward=torch.cat(tuple(agent.experience_playback['reward']),dim=0)
-            logger.info("test reward:",torch.sum(finial_reward,0))
+            logger.info("test reward:",torch.sum(finial_reward,0).cpu().detach().numpy().tolist())
             Write_Text(str(log_dir)+'Reward.txt', '%f\t' % torch.sum(finial_reward,0))
             logger.debug("path:",agent.experience_playback['action'])
         # 网络参数保存

@@ -26,7 +26,7 @@ class ActionNet(nn.Module):
         output = x
         output = self.relu(self.fc1(output))
         output = self.relu(self.fc2(output))
-        output = F.relu(self.fc3(output))
+        output = F.sigmoid(self.fc3(output))
         if not self.noise is None:
             n = self.noise(*output.shape) * self.noise_strength
             output = output + n
@@ -36,8 +36,8 @@ class ActionNet(nn.Module):
         lp = x[:, 1800].long()
         mask = [cm[i, lp[i]].unsqueeze(0) for i in range(cm.shape[0])]
         mask = torch.cat(tuple(mask), dim=0)
-        output = output * mask
-        output = F.softmax(output,-1)
+        output = (output + 0.001) * mask
+        output = F.softmax(output, -1)
         # output = self.sfm(output)
         return output
 
@@ -61,7 +61,6 @@ class CriticNet(nn.Module):
         self.fc3 = nn.Linear(512, output)
 
         self.relu = nn.LeakyReLU(negative_slope=0.01, inplace=False)
-
 
     def forward(self, x):
         x = self.relu(self.fc1(x))
