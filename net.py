@@ -26,7 +26,7 @@ class ActionNet(nn.Module):
         output = x
         output = self.relu(self.fc1(output))
         output = self.relu(self.fc2(output))
-        output = self.fc3(output)
+        output = F.relu(self.fc3(output))
         if not self.noise is None:
             n = self.noise(*output.shape) * self.noise_strength
             output = output + n
